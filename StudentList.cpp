@@ -155,7 +155,44 @@
 
 	// Remove a Node with a student from the list with a given id number
 	// If no student matches, print a message and do nothing
-	void StudentList::removeStudentById(int idNum) {}
+	void StudentList::removeStudentById(int idNum) {
+		if (head == nullptr){
+			cout << "empty" << endl;
+			return;
+		}
+		Node * current = head;
+		while (current != nullptr && current -> data.id != idNum){
+			current = current -> next;
+		}
+
+		if (current == nullptr){
+			cout << "student was not found" << endl;
+			return;
+		}
+
+		if (head == tail && current == head){
+			delete current;
+			head = nullptr;
+			tail = nullptr;
+		}
+		else if (current == head){
+			head = head -> next;
+			head -> prev = nullptr;
+			delete current;
+		}
+		else if (current == tail){
+			tail = tail -> prev;
+			tail -> next = nullptr;
+			delete current;
+		}
+		else {
+			current -> prev -> next =  current -> next;
+			current -> next -> prev =  current -> prev;
+			delete current;
+		}
+		numStudents--;
+
+	}
 
 	//Change the gpa of the student with given id number to newGPA
 	void StudentList::updateGPA(int idNum, float newGPA) {
@@ -185,14 +222,42 @@
 	s1 <-> s2 <-> s3 <-> s4 <-> s5
 	and otherList should be empty and have zero students.
 	*/
-	void StudentList::mergeList(StudentList &otherList) {}
+	void StudentList::mergeList(StudentList &otherList) {
+		if (otherList.head == nullptr){
+			cout << "empty list" << endl;
+			return;
+		}
+
+		if (head == nullptr){
+			head = otherList.head;
+			tail = otherList.tail;
+			numStudents = otherList.numStudents;
+		}
+		else{
+			tail -> next = otherList.head;
+			otherList.head -> prev = tail;
+			tail = otherList.tail;
+			numStudents = numStudents + otherList.numStudents;
+		}
+		otherList.head = nullptr;
+		otherList.tail = nullptr;
+		otherList.numStudents = 0;
+
+	}
 
 	//create a StudentList of students whose gpa is at least minGPA.
 	//Return this list.  The original (current) list should
 	//not be modified (do not remove the students from the original list).
 	StudentList StudentList::honorRoll(float minGPA) {
-		StudentList fixthis;
-		return fixthis;
+		StudentList min;
+		Node * current = head;
+		while (current != nullptr){
+			if (current -> data.GPA >= minGPA){
+				min.addBack(current -> data);
+			}
+			current = current -> next;
+		}
+		return min;
 	}
 
 	//remove all students whose GPA is below a given threshold.
@@ -201,4 +266,36 @@
 	// Be sure to correctly update both head and tail pointers when removing 
 	// from the front or back, and adjust numStudents accordingly.
 	// If the list is empty, print a message and do nothing.
-	void StudentList::removeBelowGPA(float threshold) {}
+	void StudentList::removeBelowGPA(float threshold) {
+		if (head == nullptr){
+			cout << "empty" << endl;
+			return;
+		}
+		Node * current = head;
+		while (current != nullptr){
+			Node * nextNode = current -> next;
+			if (current == head){
+				head = current -> next;
+
+				if (head != nullptr){
+					head -> prev = nullptr;
+				}
+				else {
+					tail = nullptr;
+				}
+				delete current;
+			}
+			else if (current == tail){
+				tail = current -> prev;
+				tail -> next = nullptr;
+				delete current;
+			}
+			else{
+				current -> prev -> next = current -> next;
+				current -> next -> prev = current -> prev;
+				delete current;
+			}
+			numStudents--;
+			current = nextNode;
+		}
+	}
