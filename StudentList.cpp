@@ -64,7 +64,7 @@
 			return;
 		}
 
-		if (head == nullptr){
+		if (head == tail){
 			delete tail;
 			head = nullptr;
 			tail = nullptr;
@@ -149,7 +149,7 @@
 			current = current -> next;
 		}
 		cout << "student not found" << endl;
-		Student dummy("Dummy", -1, 0);
+		Student dummy("nobody", -1, 0.0);
 		return dummy;
 	}
 
@@ -274,6 +274,7 @@
 		Node * current = head;
 		while (current != nullptr){
 			Node * nextNode = current -> next;
+			if(current -> data.GPA < threshold){
 			if (current == head){
 				head = current -> next;
 
@@ -296,6 +297,7 @@
 				delete current;
 			}
 			numStudents--;
+		}
 			current = nextNode;
 		}
 	}
